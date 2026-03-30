@@ -26,9 +26,16 @@ jobs:
             cd /srv/wins-nms
             git fetch origin wins
             git reset --hard origin/wins
-            npm install --production
-            npm install @tailwindcss/postcss
+            
+            # Install ALL dependencies needed for build/run
+            npm install 
+            
+            # Ensure the specific next-gen tailwind stuff is there
+            npm install @tailwindcss/postcss 
+            
             rm -rf .next
             npm run build
+            
+            # Restart and ensure PM2 points to the right folder
             pm2 restart wins --update-env --cwd /srv/wins-nms
             pm2 save
