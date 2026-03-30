@@ -20,14 +20,15 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
+          timeout: 60s
+          command_timeout: 20m
           script: |
             cd /srv/wins-nms
-            
-            # 1. Sync files from GitHub
-            git fetch origin main
-            git reset --hard origin/main
+            git fetch origin wins
+            git reset --hard origin/wins
             npm install --production
+            npm install @tailwindcss/postcss
             rm -rf .next
             npm run build
-            pm2 restart wins
+            pm2 restart wins --update-env --cwd /srv/wins-nms
             pm2 save
