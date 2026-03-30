@@ -26,6 +26,7 @@ jobs:
             # 1. Sync files from GitHub
             git fetch origin main
             git reset --hard origin/main
+            npm install --production
             rm -rf .next
             npm run build
             pm2 restart wins
