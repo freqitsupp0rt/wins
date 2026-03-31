@@ -24,18 +24,22 @@ jobs:
           command_timeout: 20m
           script: |
             cd /srv/wins-nms
+            
+            # 1. Setup Git if the folder isn't a repo yet
+            if [ ! -d .git ]; then
+              git init
+              git remote add origin git@github.com:freqitsupp0rt/wins.git
+            fi
+            
+            # 2. Sync with the wins branch
             git fetch origin wins
             git reset --hard origin/wins
             
-            # Install ALL dependencies needed for build/run
-            npm install 
-            
-            # Ensure the specific next-gen tailwind stuff is there
-            npm install @tailwindcss/postcss 
-            
+            # 3. Clean Build
+            npm install
             rm -rf .next
             npm run build
             
-            # Restart and ensure PM2 points to the right folder
+            # 4. Process Management
             pm2 restart wins --update-env --cwd /srv/wins-nms
             pm2 save
